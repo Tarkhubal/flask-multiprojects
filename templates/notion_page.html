@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block body_class %}spa-enabled{% endblock %}
+{% block spa_index %}data-spa{% endblock %}
+{% block spa_flask %}data-spa{% endblock %}
+{% block spa_md %}data-spa{% endblock %}
+
+{% block title %}{{ current_page }} - {{ project_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide">
+    <div class="breadcrumb fade-in">
+        <a href="{{ url_for('index') }}" data-spa>Accueil</a> / 
+        <a href="{{ url_for('notion_list') }}" data-spa>Projets Notion</a> / 
+        <a href="{{ url_for('notion_project', project_name=project_name) }}" data-spa>{{ project_emoji }} {{ project_display_name }}</a>
+    {% set without_ext = current_page.rsplit('.', 1)[0] %}
+    {% set path_parts = without_ext.split('/') %}
+        {% for i in range(path_parts|length) %}
+            {% set segment = path_parts[i] %}
+            {% set path_so_far = '/'.join(path_parts[:i+1]) %}
+            {% if i < path_parts|length - 1 %}
+                / <a href="{{ url_for('notion_page', project_name=project_name, page=path_so_far) }}" data-spa>{{ segment }}</a>
+            {% else %}
+                / <span>{{ segment }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="md-layout">
+        <aside class="md-sidebar slide-left">
+            <div class="sidebar-header">
+                <h3>{{ project_emoji }} {{ project_display_name }}</h3>
+                {% if config.description %}
+                    <p class="project-description">{{ config.description }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="sidebar-controls">
+                <h4>📑 Fichiers</h4>
+                <div class="folder-controls">
+                    <button class="folder-control-btn" id="expand-all" title="Déplier tout">
+                        <i class="fa-solid fa-angles-down"></i>
+                    </button>
+                    <button class="folder-control-btn" id="collapse-all" title="Replier tout">
+                        <i class="fa-solid fa-angles-up"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="file-search" class="file-search-input" placeholder="🔍 Rechercher un fichier...">
+            </div>
+            
+            <div class="file-tree">
+                {% macro render_tree(tree, path='') %}
+                    {% if tree.files %}
+                        <ul class="file-list">
+                            {% for file in tree.files %}
+                                <li class="file-item {% if file.path == current_page %}active{% endif %}">
+                                    <a href="{{ url_for('notion_page', project_name=project_name, page=file.slug) }}" class="file-link" data-spa>
+                                        <span class="file-icon">
+                                            {% if file.path == current_page %}▶
+                                            {% elif file.type == 'database' %}📊
+                                            {% else %}📝{% endif %}
+                                        </span>
+                                        <span class="file-name">{{ file.name }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if tree.folders %}
+                        {% for folder_name, subtree in tree.folders.items() %}
+                            <details class="folder" {% if path in current_page or not path %}open{% endif %}>
+                                <summary class="folder-summary">
+                                    <span class="folder-icon">{% if path in current_page or not path %}📂{% else %}📁{% endif %}</span>
+                                    <span class="folder-name">{{ folder_name }}</span>
+                                </summary>
+                                <div class="folder-content">
+                                    {{ render_tree(subtree, path + folder_name + '/') }}
+                                </div>
+                            </details>
+                        {% endfor %}
+                    {% endif %}
+                {% endmacro %}
+                
+                {{ render_tree(file_tree) }}
+            </div>
+            
+            <div class="keyboard-shortcuts">
+                <h5>⌨️ Raccourcis</h5>
+                <ul>
+                    <li><kbd>↑</kbd> <kbd>↓</kbd> Naviguer entre fichiers</li>
+                </ul>
+            </div>
+        </aside>
+
+        <article class="md-content">
+            {{ content|safe }}
+        </article>
+    </div>
+</div>
+{% endblock %}

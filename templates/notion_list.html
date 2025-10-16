@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block body_class %}spa-enabled{% endblock %}
+{% block spa_index %}data-spa{% endblock %}
+{% block spa_flask %}data-spa{% endblock %}
+{% block spa_md %}data-spa{% endblock %}
+
+{% block title %}Projets Notion - Multi-Projects Host{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb fade-in">
+        <a href="{{ url_for('index') }}" data-spa>Accueil</a> / <span>Projets Notion</span>
+    </div>
+    
+    <div class="page-header slide-up">
+        <h1>📓 Projets Notion</h1>
+        <p class="subtitle">{{ projects|length }} projet{% if projects|length > 1 %}s{% endif %} disponible{% if projects|length > 1 %}s{% endif %}</p>
+    </div>
+
+    {% if projects %}
+        <ul class="project-grid">
+            {% for project in projects %}
+                <li class="project-card fade-in">
+                    <a href="{{ url_for('notion_project', project_name=project.id) }}" class="card-link">
+                        <div class="card-icon">{{ project.emoji }}</div>
+                        <h3 class="card-title">{{ project.name }}</h3>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <p class="empty-message">Aucun projet Notion disponible</p>
+            <p class="empty-hint">Placez des exports Notion dans le dossier <code>projects/notion/</code></p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

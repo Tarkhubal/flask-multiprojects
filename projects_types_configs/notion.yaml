@@ -1,0 +1,12 @@
+type: notion
+identifier: notion
+label: Notion Projects
+description: Render exported Notion projects with pages and databases.
+projects_dir: projects/notion
+project_config_file: .mph-config
+default_emoji: "📓"
+markdown:
+  extensions:
+    - fenced_code
+    - tables
+    - toc

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block body_class %}spa-enabled{% endblock %}
+{% block spa_index %}data-spa{% endblock %}
+{% block spa_flask %}data-spa{% endblock %}
+{% block spa_md %}data-spa{% endblock %}
+
+{% block title %}{{ project_name }} - Projets Notion{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb fade-in">
+        <a href="{{ url_for('index') }}" data-spa>Accueil</a> / 
+        <a href="{{ url_for('notion_list') }}" data-spa>Projets Notion</a> / 
+        <span>{{ project_name }}</span>
+    </div>
+    
+    <div class="page-header slide-up">
+        <h1>📓 {{ project_name }}</h1>
+        <p class="subtitle">{{ files|length }} fichier{% if files|length > 1 %}s{% endif %}</p>
+    </div>
+
+    {% if files %}
+        <ul class="file-list-simple">
+            {% for file in files %}
+                <li class="file-item-simple fade-in">
+                    <a href="{{ url_for('notion_page', project_name=project_name, page=file.rsplit('.', 1)[0]) }}" data-spa>
+                        {% if file.endswith('.csv') %}
+                            📊 {{ file }}
+                        {% else %}
+                            📝 {{ file }}
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <p class="empty-message">Aucun fichier trouvé dans ce projet</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
