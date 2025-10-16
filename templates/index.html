@@ -64,6 +64,26 @@
             {% endif %}
             <a href="{{ url_for('notion_list') }}" class="view-all-btn">Voir tous les projets Notion →</a>
         </div>
+
+        <div class="project-section slide-up">
+            <h2>🌐 Static Projects</h2>
+            <div class="project-count">{{ static_projects|length }} project{% if static_projects|length > 1 %}s{% endif %}</div>
+            {% if static_projects %}
+                <ul class="project-list">
+                    {% for project in static_projects %}
+                        <li class="project-item">
+                            <a href="{{ url_for('static_project', project_name=project.id) }}" class="project-link">
+                                <span class="project-icon">{{ project.emoji }}</span>
+                                <span class="project-name">{{ project.name }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-projects">No static projects available</p>
+            {% endif %}
+            <a href="{{ url_for('static_list') }}" class="view-all-btn">View all static projects →</a>
+        </div>
     </div>
 </div>
 {% endblock %}
