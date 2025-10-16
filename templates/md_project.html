@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body_class %}spa-enabled{% endblock %}
+{% block spa_index %}data-spa{% endblock %}
+{% block spa_flask %}data-spa{% endblock %}
+{% block spa_md %}data-spa{% endblock %}
+
+{% block title %}{{ project_name }} - Markdown Project{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb fade-in">
+        <a href="{{ url_for('index') }}" data-spa>Accueil</a> / 
+        <a href="{{ url_for('md_list') }}" data-spa>Projets Markdown</a> / 
+        <span>{{ project_name }}</span>
+    </div>
+
+    <h1 class="page-title fade-in">📄 {{ project_name }}</h1>
+
+    {% if files %}
+        <div class="file-list-container slide-up">
+            <h2>Fichiers disponibles</h2>
+            <ul class="file-list">
+                {% for file in files %}
+                    <li class="file-item">
+                        <a href="{{ url_for('md_page', project_name=project_name, page=file.rsplit('.', 1)[0]) }}" class="file-link" data-spa>
+                            <span class="file-icon">📝</span>
+                            <span class="file-name">{{ file }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div class="empty-state fade-in">
+            <div class="empty-icon">📭</div>
+            <p>Aucun fichier Markdown trouvé dans ce projet</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

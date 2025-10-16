@@ -1,0 +1,29 @@
+# config for multi-projects host
+# custom project name
+name: Exemple Documentation
+
+# custom emoji icon
+emoji: 📚
+
+# md project settings
+markdown:
+    # files to hide from navigation
+    hidden_files:
+        - installation.md
+        - folder/test.md
+    
+    # folders to hide
+    hidden_folders:
+        - drafts
+        - .private
+
+# project description
+description: Projet d'exemple avec configuration personnalisée
+
+# author info
+author: votre nom
+
+# custom settings
+settings:
+    enable_toc: true
+    enable_search: false

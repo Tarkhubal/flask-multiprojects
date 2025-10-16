@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Multi-Projects Host{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="projects-grid">
+        <div class="project-section slide-up">
+            <h2>🔧 Projets Flask</h2>
+            <div class="project-count">{{ flask_projects|length }} projet{% if flask_projects|length > 1 %}s{% endif %}</div>
+            {% if flask_projects %}
+                <ul class="project-list">
+                    {% for project in flask_projects %}
+                        <li class="project-item">
+                            <a href="{{ url_for('flask_project', project_name=project.id) }}" class="project-link">
+                                <span class="project-icon">{{ project.emoji }}</span>
+                                <span class="project-name">{{ project.name }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-projects">Aucun projet Flask disponible</p>
+            {% endif %}
+            <a href="{{ url_for('flask_list') }}" class="view-all-btn">Voir tous les projets Flask →</a>
+        </div>
+
+        <div class="project-section slide-up">
+            <h2>📝 Projets Markdown</h2>
+            <div class="project-count">{{ md_projects|length }} projet{% if md_projects|length > 1 %}s{% endif %}</div>
+            {% if md_projects %}
+                <ul class="project-list">
+                    {% for project in md_projects %}
+                        <li class="project-item">
+                            <a href="{{ url_for('md_project', project_name=project.id) }}" class="project-link">
+                                <span class="project-icon">{{ project.emoji }}</span>
+                                <span class="project-name">{{ project.name }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-projects">Aucun projet Markdown disponible</p>
+            {% endif %}
+            <a href="{{ url_for('md_list') }}" class="view-all-btn">Voir tous les projets Markdown →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

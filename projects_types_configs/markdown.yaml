@@ -1,0 +1,12 @@
+type: markdown
+identifier: markdown
+label: Markdown Projects
+description: Render Markdown documentation as HTML pages.
+projects_dir: projects/markdown
+project_config_file: .mph-config
+default_emoji: "📄"
+markdown:
+  extensions:
+    - fenced_code
+    - tables
+    - toc

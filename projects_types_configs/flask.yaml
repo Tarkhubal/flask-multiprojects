@@ -1,0 +1,9 @@
+type: flask
+identifier: flask
+label: Flask Projects
+description: Serve Flask applications from the projects directory.
+projects_dir: projects/flask
+project_config_file: .mph-config
+default_emoji: "📦"
+app_filename: app.py
+application_attribute: app
