@@ -1,0 +1,7 @@
+type: static
+identifier: static
+label: Static Projects
+description: Serve static HTML/CSS/JS projects.
+projects_dir: projects/static
+project_config_file: .mph-config
+default_emoji: "🌐"

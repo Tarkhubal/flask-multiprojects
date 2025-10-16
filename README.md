@@ -1,43 +1,43 @@
 # Multi-Projects Host
 
-Application web Flask pour héberger plusieurs projets Flask, Markdown et autres types configurables sur un seul serveur.
+Flask web application for hosting multiple Flask, Markdown, and other configurable project types on a single server.
 
-## Présentation
+## Overview
 
-Multi-Projects Host agit comme un hub extensible. Chaque type de projet possède sa propre logique, ses routes et ses règles de détection. La configuration se fait via des fichiers YAML, ce qui facilite l'ajout ou l'ajustement de nouveaux systèmes (Flask, Markdown, futurs types comme Django, NodeJS, HTML statique, etc.).
+Multi-Projects Host acts as an extensible hub. Each project type has its own logic, routes, and detection rules. Configuration is done via YAML files, which makes it easy to add or adjust new systems (Flask, Markdown, future types like Django, NodeJS, static HTML, etc.).
 
-## Fonctionnalités clés
+## Key Features
 
-- hébergement simultané de projets Flask, Markdown, Notion et d'autres types personnalisés
-- routage dynamique piloté par la configuration YAML dans `projects_types_configs`
-- support natif des exports Notion (pages Markdown et bases de données CSV)
-- navigation single-page (SPA) avec transitions fluides
-- menu hiérarchique pliable avec icônes dynamiques
-- rendu Markdown avancé (fenced code, tables, toc)
-- affichage des bases de données Notion sous forme de tableaux interactifs
-- interface responsive avec animations CSS accélérées GPU
-- pages d'erreur personnalisées et theme switch côté client
+- simultaneous hosting of Flask, Markdown, Notion, static HTML/CSS/JS, and other custom project types
+- dynamic routing driven by YAML configuration in `projects_types_configs`
+- native support for Notion exports (Markdown pages and CSV databases)
+- single-page application (SPA) navigation with smooth transitions
+- collapsible hierarchical menu with dynamic icons
+- advanced Markdown rendering (fenced code, tables, toc)
+- interactive table display for Notion databases
+- responsive interface with GPU-accelerated CSS animations
+- custom error pages and client-side theme switching
 
-## Architecture de configuration
+## Configuration Architecture
 
-Les fichiers YAML contenus dans `projects_types_configs/` décrivent chaque type de projet. Ils acceptent les champs suivants :
+YAML files in `projects_types_configs/` describe each project type. They accept the following fields:
 
-- `type` : identifiant du type (ex. `flask`, `markdown`)
-- `identifier` : clé interne utilisée pour référencer le type dans l'application
-- `projects_dir` : chemin (relatif ou absolu) vers le dossier des projets
-- `project_config_file` : nom du fichier de configuration propre à chaque projet (par défaut `.mph-config`)
-- `default_emoji` : emoji utilisé si un projet n'en définit pas
-- champs spécifiques (ex. `app_filename` pour Flask, `markdown.extensions` pour Markdown)
-- `implementation` (optionnel) : chemin module:Classe si vous fournissez votre propre classe `ProjectType`
+- `type`: type identifier (e.g., `flask`, `markdown`, `static`)
+- `identifier`: internal key used to reference the type in the application
+- `projects_dir`: path (relative or absolute) to the projects folder
+- `project_config_file`: name of the configuration file specific to each project (default `.mph-config`)
+- `default_emoji`: emoji used if a project doesn't define one
+- type-specific fields (e.g., `app_filename` for Flask, `markdown.extensions` for Markdown)
+- `implementation` (optional): module:Class path if you provide your own `ProjectType` class
 
-### Ajouter un nouveau type
+### Adding a New Type
 
-1. Créer une classe héritant de `projects_types.base.ProjectType` (ex. `projects_types/my_type.py`).
-2. Dans cette classe : implémenter `list_projects` et `register_routes`, puis enregistrer les routes Flask nécessaires.
-3. Ajouter un fichier `projects_types_configs/mon_type.yaml` avec `type` correspondant (ou `implementation` vers votre classe personnalisée).
-4. Redémarrer l'application pour charger automatiquement le nouveau type.
+1. Create a class inheriting from `projects_types.base.ProjectType` (e.g., `projects_types/my_type.py`).
+2. In this class: implement `list_projects` and `register_routes`, then register the necessary Flask routes.
+3. Add a file `projects_types_configs/my_type.yaml` with the corresponding `type` (or `implementation` to your custom class).
+4. Restart the application to automatically load the new type.
 
-## Structure du dépôt
+## Repository Structure
 
 ```text
 projects-flask-repo/
@@ -45,27 +45,34 @@ projects-flask-repo/
 ├── requirements.txt
 ├── projects/
 │   ├── flask/
-│   │   └── exemple/
+│   │   └── example/
 │   │       └── app.py
 │   ├── markdown/
-│   │   └── exemple/
+│   │   └── example/
 │   │       ├── index.md
 │   │       └── ...
-│   └── notion/
-│       └── mon-export/
-│           ├── index.md
-│           ├── Database.csv
-│           └── ...
+│   ├── notion/
+│   │   └── my-export/
+│   │       ├── index.md
+│   │       ├── Database.csv
+│   │       └── ...
+│   └── static/
+│       └── example/
+│           ├── index.html
+│           ├── style.css
+│           └── script.js
 ├── projects_types/
 │   ├── __init__.py
 │   ├── base.py
 │   ├── flask_type.py
 │   ├── markdown_type.py
-│   └── notion_type.py
+│   ├── notion_type.py
+│   └── static_type.py
 ├── projects_types_configs/
 │   ├── flask.yaml
 │   ├── markdown.yaml
-│   └── notion.yaml
+│   ├── notion.yaml
+│   └── static.yaml
 ├── static/
 │   ├── css/style.css
 │   └── js/
@@ -82,6 +89,8 @@ projects-flask-repo/
 │   ├── notion_project.html
 │   ├── notion_page.html
 │   ├── notion_database.html
+│   ├── static_list.html
+│   ├── static_project.html
 │   ├── debug_spa.html
 │   ├── 404.html
 │   └── 500.html
@@ -90,37 +99,40 @@ projects-flask-repo/
 
 ## Installation
 
-```powershell
+```bash
 pip install -r requirements.txt
 ```
 
-## Démarrage
+## Getting Started
 
-```powershell
+```bash
 python app.py
 ```
 
-L'application démarre sur <http://localhost:5000>.
+The application starts on <http://localhost:5000>.
 
-## Routes principales
+## Main Routes
 
-- `/` : accueil listant les projets actifs
-- `/flask` : liste des projets Flask
-- `/flask/<project_name>` : projet Flask (les sous-routes sont déléguées à l'application embarquée)
-- `/md` : liste des projets Markdown
-- `/md/<project_name>` : page d'accueil du projet Markdown
-- `/md/<project_name>/<page>` : rendu d'une page Markdown
-- `/notion` : liste des projets Notion
-- `/notion/<project_name>` : page d'accueil du projet Notion
-- `/notion/<project_name>/<page>` : rendu d'une page ou base de données Notion
+- `/` : homepage listing active projects
+- `/flask` : list of Flask projects
+- `/flask/<project_name>` : Flask project (sub-routes are delegated to the embedded application)
+- `/md` : list of Markdown projects
+- `/md/<project_name>` : Markdown project homepage
+- `/md/<project_name>/<page>` : Markdown page rendering
+- `/notion` : list of Notion projects
+- `/notion/<project_name>` : Notion project homepage
+- `/notion/<project_name>/<page>` : Notion page or database rendering
+- `/static` : list of static HTML/CSS/JS projects
+- `/static/<project_name>` : static project rendering
+- `/static/<project_name>/<path>` : static file serving
 
-## Ajouter un projet Flask
+## Adding a Flask Project
 
-1. Placer un dossier dans `projects/flask/nom_du_projet/`.
-2. Créer un fichier `app.py` contenant une application Flask nommée selon `application_attribute` (par défaut `app`).
-3. Optionnel : ajouter un fichier `.mph-config` pour définir `name`, `emoji`, etc.
+1. Create a folder in `projects/flask/project_name/`.
+2. Create an `app.py` file containing a Flask application named according to `application_attribute` (default `app`).
+3. Optional: add a `.mph-config` file to define `name`, `emoji`, etc.
 
-Exemple minimal :
+Minimal example:
 
 ```python
 from flask import Flask
@@ -129,64 +141,97 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'bienvenue sur mon projet flask'
+    return 'welcome to my flask project'
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-## Ajouter un projet Markdown
+## Adding a Markdown Project
 
-1. Placer un dossier dans `projects/markdown/nom_du_projet/`.
-2. Ajouter des fichiers `.md` (un `index.md` ou `README.md` sert de page d'accueil automatique).
-3. Configurer `.mph-config` pour masquer certains fichiers (`markdown.hidden_files`) ou dossiers (`markdown.hidden_folders`).
+1. Create a folder in `projects/markdown/project_name/`.
+2. Add `.md` files (an `index.md` or `README.md` serves as the automatic homepage).
+3. Configure `.mph-config` to hide certain files (`markdown.hidden_files`) or folders (`markdown.hidden_folders`).
 
-## Ajouter un projet Notion
+## Adding a Notion Project
 
-1. Exporter votre workspace ou page Notion (Format : Markdown & CSV).
-2. Placer le dossier exporté dans `projects/notion/nom_du_projet/`.
-3. Optionnel : ajouter un fichier `.mph-config` pour personnaliser le nom et l'emoji.
+1. Export your Notion workspace or page (Format: Markdown & CSV).
+2. Place the exported folder in `projects/notion/project_name/`.
+3. Optional: add a `.mph-config` file to customize the name and emoji.
 
-L'application détectera automatiquement :
-- Les pages Notion (fichiers `.md`) et les affichera avec le rendu Markdown
-- Les bases de données Notion (fichiers `.csv`) et les affichera sous forme de tableaux
-- La structure hiérarchique des dossiers
+The application will automatically detect:
+- Notion pages (`.md` files) and display them with Markdown rendering
+- Notion databases (`.csv` files) and display them as tables
+- The hierarchical folder structure
 
-Exemple de fichier `.mph-config` pour un projet Notion :
+Example `.mph-config` file for a Notion project:
 
 ```yaml
-name: Documentation Projet
+name: Project Documentation
 emoji: "📓"
-description: Export de notre workspace Notion
+description: Export of our Notion workspace
 notion:
     hidden_files:
-        - brouillons/todo.md
+        - drafts/todo.md
     hidden_folders:
         - archives
 ```
 
-### Exemples de fichiers `.mph-config`
+## Adding a Static HTML/CSS/JS Project
 
-Exemple pour un projet Flask (`projects/flask/blog/.mph-config`) :
+1. Create a folder in `projects/static/project_name/`.
+2. Add your HTML, CSS, and JavaScript files.
+3. Create an `index.html` file as the entry point.
+4. Optional: add a `.mph-config` file to customize the name and emoji.
+
+Minimal example:
+
+Create `projects/static/my-site/index.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Static Site</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Welcome to my static site</h1>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+Create `projects/static/my-site/.mph-config`:
 
 ```yaml
-name: Blog interne
+name: My Portfolio
+emoji: "🌐"
+description: Personal website
+```
+
+### Configuration Examples
+
+Example for a Flask project (`projects/flask/blog/.mph-config`):
+
+```yaml
+name: Internal Blog
 emoji: "🧪"
-description: Application Flask de test
+description: Test Flask application
 environment:
     FLASK_ENV: development
     FEATURE_FLAG: search
 routes:
     - path: /
-      label: Accueil
+      label: Home
     - path: /admin
       label: Administration
 ```
 
-Exemple pour un projet Markdown (`projects/markdown/docs/.mph-config`) :
+Example for a Markdown project (`projects/markdown/docs/.mph-config`):
 
 ```yaml
-name: Documentation Produit
+name: Product Documentation
 emoji: "📘"
 markdown:
     hidden_files:
@@ -201,13 +246,13 @@ breadcrumbs:
     enabled: true
 ```
 
-## Créer un type tiers (ex. NodeJS)
+## Creating a Custom Type (e.g., NodeJS)
 
-1. Créer le fichier `projects_types/node_type.py` avec une classe dédiée.
-2. Définir le type dans `projects_types_configs/node.yaml` en précisant `implementation`.
-3. Redémarrer l'application pour charger le nouveau type.
+1. Create the file `projects_types/node_type.py` with a dedicated class.
+2. Define the type in `projects_types_configs/node.yaml` specifying `implementation`.
+3. Restart the application to load the new type.
 
-Extrait minimal pour la classe personnalisée :
+Minimal code snippet for the custom class:
 
 ```python
 from pathlib import Path
@@ -254,7 +299,7 @@ class NodeProjectType(ProjectType):
             )
 ```
 
-Configuration YAML correspondante (`projects_types_configs/node.yaml`) :
+Corresponding YAML configuration (`projects_types_configs/node.yaml`):
 
 ```yaml
 type: node
@@ -265,17 +310,17 @@ project_config_file: .mph-config
 default_emoji: "🟢"
 ```
 
-## SPA et navigation hiérarchique
+## SPA and Hierarchical Navigation
 
 ### SPA (Single Page Application)
 
-Le script `static/js/spa.js` intercepte les clics sur les liens marqués `data-spa`. Les pages suivantes bénéficient de la navigation fluide :
+The `static/js/spa.js` script intercepts clicks on links marked with `data-spa`. The following pages benefit from smooth navigation:
 
 - `/flask`
 - `/md`
-- toutes les pages Markdown individuelles
+- all individual Markdown pages
 
-Avantages : chargement quasi instantané, transitions lissées, meilleure expérience utilisateur et trafic réduit.
+Advantages: near-instant loading, smooth transitions, better user experience, and reduced traffic.
 
 ```javascript
 fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
@@ -286,9 +331,9 @@ fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
     });
 ```
 
-### Menu Markdown hiérarchique
+### Hierarchical Markdown Menu
 
-Les projets Markdown affichent automatiquement la structure des dossiers :
+Markdown projects automatically display the folder structure:
 
 ```text
 📂 folder/
@@ -299,7 +344,7 @@ Les projets Markdown affichent automatiquement la structure des dossiers :
 📝 api.md
 ```
 
-Interactions : clic pour plier/déplier, icône dynamique (📁 ↔ 📂), animations `slideDown` rapides et état ouvert conservé pour les dossiers appartenant à la page active.
+Interactions: click to collapse/expand, dynamic icon (📁 ↔ 📂), fast `slideDown` animations, and open state preserved for folders belonging to the active page.
 
 ```css
 .folder-summary {
@@ -313,19 +358,19 @@ Interactions : clic pour plier/déplier, icône dynamique (📁 ↔ 📂), ani
 }
 ```
 
-## API AJAX
+## AJAX API
 
-Toutes les requêtes SPA envoient l'entête `X-Requested-With: XMLHttpRequest`.
+All SPA requests send the `X-Requested-With: XMLHttpRequest` header.
 
 ```http
 X-Requested-With: XMLHttpRequest
 ```
 
-Exemple de réponses JSON :
+Example JSON responses:
 
 ```json
 {
-    "projects": ["exemple", "docs"]
+    "projects": ["example", "docs"]
 }
 ```
 
@@ -333,21 +378,21 @@ Exemple de réponses JSON :
 {
     "content": "<html>...",
     "current_page": "folder/test.md",
-    "project_name": "exemple"
+    "project_name": "example"
 }
 ```
 
-## Animations et performances
+## Animations and Performance
 
-- courbes `cubic-bezier(0.4, 0, 0.2, 1)` pour toutes les transitions
-- `fadeIn` et `slideUp` (0.6 s), `slideDown` (0.3 s), `slideLeft` (0.6 s)
-- rendu GPU lorsque possible
-- mises à jour DOM ciblées pour limiter les reflows
-- chargements typiques : first paint < 100 ms, content loaded < 200 ms, ready < 300 ms
+- `cubic-bezier(0.4, 0, 0.2, 1)` curves for all transitions
+- `fadeIn` and `slideUp` (0.6s), `slideDown` (0.3s), `slideLeft` (0.6s)
+- GPU rendering when possible
+- targeted DOM updates to limit reflows
+- typical loading times: first paint < 100ms, content loaded < 200ms, ready < 300ms
 
-## Compatibilité
+## Compatibility
 
 - Chrome / Edge 90+
 - Firefox 88+
 - Safari 14+
-- Navigateurs modernes supportant Fetch API, History API, animations CSS et éléments `<details>/<summary>`
+- Modern browsers supporting Fetch API, History API, CSS animations, and `<details>/<summary>` elements
