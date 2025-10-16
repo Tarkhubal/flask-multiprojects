@@ -8,11 +8,13 @@ Multi-Projects Host agit comme un hub extensible. Chaque type de projet possède
 
 ## Fonctionnalités clés
 
-- hébergement simultané de projets Flask, Markdown et d'autres types personnalisés
+- hébergement simultané de projets Flask, Markdown, Notion et d'autres types personnalisés
 - routage dynamique piloté par la configuration YAML dans `projects_types_configs`
+- support natif des exports Notion (pages Markdown et bases de données CSV)
 - navigation single-page (SPA) avec transitions fluides
-- menu Markdown hiérarchique pliable avec icônes dynamiques
+- menu hiérarchique pliable avec icônes dynamiques
 - rendu Markdown avancé (fenced code, tables, toc)
+- affichage des bases de données Notion sous forme de tableaux interactifs
 - interface responsive avec animations CSS accélérées GPU
 - pages d'erreur personnalisées et theme switch côté client
 
@@ -45,18 +47,25 @@ projects-flask-repo/
 │   ├── flask/
 │   │   └── exemple/
 │   │       └── app.py
-│   └── markdown/
-│       └── exemple/
+│   ├── markdown/
+│   │   └── exemple/
+│   │       ├── index.md
+│   │       └── ...
+│   └── notion/
+│       └── mon-export/
 │           ├── index.md
+│           ├── Database.csv
 │           └── ...
 ├── projects_types/
 │   ├── __init__.py
 │   ├── base.py
 │   ├── flask_type.py
-│   └── markdown_type.py
+│   ├── markdown_type.py
+│   └── notion_type.py
 ├── projects_types_configs/
 │   ├── flask.yaml
-│   └── markdown.yaml
+│   ├── markdown.yaml
+│   └── notion.yaml
 ├── static/
 │   ├── css/style.css
 │   └── js/
@@ -69,6 +78,10 @@ projects-flask-repo/
 │   ├── md_list.html
 │   ├── md_project.html
 │   ├── md_page.html
+│   ├── notion_list.html
+│   ├── notion_project.html
+│   ├── notion_page.html
+│   ├── notion_database.html
 │   ├── debug_spa.html
 │   ├── 404.html
 │   └── 500.html
@@ -97,6 +110,9 @@ L'application démarre sur <http://localhost:5000>.
 - `/md` : liste des projets Markdown
 - `/md/<project_name>` : page d'accueil du projet Markdown
 - `/md/<project_name>/<page>` : rendu d'une page Markdown
+- `/notion` : liste des projets Notion
+- `/notion/<project_name>` : page d'accueil du projet Notion
+- `/notion/<project_name>/<page>` : rendu d'une page ou base de données Notion
 
 ## Ajouter un projet Flask
 
@@ -124,6 +140,30 @@ if __name__ == '__main__':
 1. Placer un dossier dans `projects/markdown/nom_du_projet/`.
 2. Ajouter des fichiers `.md` (un `index.md` ou `README.md` sert de page d'accueil automatique).
 3. Configurer `.mph-config` pour masquer certains fichiers (`markdown.hidden_files`) ou dossiers (`markdown.hidden_folders`).
+
+## Ajouter un projet Notion
+
+1. Exporter votre workspace ou page Notion (Format : Markdown & CSV).
+2. Placer le dossier exporté dans `projects/notion/nom_du_projet/`.
+3. Optionnel : ajouter un fichier `.mph-config` pour personnaliser le nom et l'emoji.
+
+L'application détectera automatiquement :
+- Les pages Notion (fichiers `.md`) et les affichera avec le rendu Markdown
+- Les bases de données Notion (fichiers `.csv`) et les affichera sous forme de tableaux
+- La structure hiérarchique des dossiers
+
+Exemple de fichier `.mph-config` pour un projet Notion :
+
+```yaml
+name: Documentation Projet
+emoji: "📓"
+description: Export de notre workspace Notion
+notion:
+    hidden_files:
+        - brouillons/todo.md
+    hidden_folders:
+        - archives
+```
 
 ### Exemples de fichiers `.mph-config`
 
