@@ -29,9 +29,11 @@ def index():
     """homepage with all projects"""
     flask_projects = _projects_for('flask')
     md_projects = _projects_for('markdown')
+    notion_projects = _projects_for('notion')
     return render_template('index.html',
                            flask_projects=flask_projects,
-                           md_projects=md_projects)
+                           md_projects=md_projects,
+                           notion_projects=notion_projects)
 
 
 @app.errorhandler(404)

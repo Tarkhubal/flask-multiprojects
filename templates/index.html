@@ -44,6 +44,26 @@
             {% endif %}
             <a href="{{ url_for('md_list') }}" class="view-all-btn">Voir tous les projets Markdown →</a>
         </div>
+
+        <div class="project-section slide-up">
+            <h2>📓 Projets Notion</h2>
+            <div class="project-count">{{ notion_projects|length }} projet{% if notion_projects|length > 1 %}s{% endif %}</div>
+            {% if notion_projects %}
+                <ul class="project-list">
+                    {% for project in notion_projects %}
+                        <li class="project-item">
+                            <a href="{{ url_for('notion_project', project_name=project.id) }}" class="project-link">
+                                <span class="project-icon">{{ project.emoji }}</span>
+                                <span class="project-name">{{ project.name }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-projects">Aucun projet Notion disponible</p>
+            {% endif %}
+            <a href="{{ url_for('notion_list') }}" class="view-all-btn">Voir tous les projets Notion →</a>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -184,3 +184,6 @@ cython_debug/
 # CUSTOMIZATIONS
 
 backup
+
+# Sample projects for demonstration (not committed)
+projects/notion/sample-export/

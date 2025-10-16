@@ -10,11 +10,13 @@ import yaml
 from .base import ProjectType
 from .flask_type import FlaskProjectType
 from .markdown_type import MarkdownProjectType
+from .notion_type import NotionProjectType
 
 
 TYPE_REGISTRY: Dict[str, Type[ProjectType]] = {
     "flask": FlaskProjectType,
     "markdown": MarkdownProjectType,
+    "notion": NotionProjectType,
 }
 
 
